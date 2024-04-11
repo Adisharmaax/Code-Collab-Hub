@@ -7,5 +7,9 @@ export const initSocket = async () => {
         timeout: 10000,
         transports: ['websocket'],
     };
-    return io(process.env.REACT_APP_BACKEND_URL, options);
+
+    // Assuming you have set a REACT_APP_BACKEND_URL environment variable
+    const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:4000'; // Default to port 4000 if REACT_APP_BACKEND_URL is not set
+
+    return io(backendUrl, options);
 };
