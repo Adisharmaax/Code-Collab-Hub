@@ -13,9 +13,6 @@ import {
 } from "react-router-dom";
 import Axios from "axios";
 
-
-
-
 const EditorPage = () => {
   const socketRef = useRef(null);
   const codeRef = useRef(null);
@@ -26,15 +23,13 @@ const EditorPage = () => {
 
   const [loading, setLoading] = useState(false);
 
-   // State variable to set users input
-   const [userInput, setUserInput] = useState("");
+  // State variable to set users input
+  const [userInput, setUserInput] = useState("");
 
-   // State variable to set users output
-   const [userOutput, setUserOutput] = useState("");
+  // State variable to set users output
+  const [userOutput, setUserOutput] = useState("");
 
-   const [userLang, setUserLang] = useState("python");
-
-
+  const [userLang, setUserLang] = useState("python");
 
   useEffect(() => {
     const init = async () => {
@@ -108,16 +103,14 @@ const EditorPage = () => {
     setUserOutput("");
   }
 
-
   // Function to call the compile endpoint
   function compile() {
-
     setLoading(true);
     if (codeRef === ``) {
       return;
     }
 
-    console.log(codeRef)
+    console.log(codeRef);
 
     // Post request to compile endpoint
     Axios.post(`http://localhost:4000/compile`, {
@@ -126,7 +119,7 @@ const EditorPage = () => {
       input: userInput,
     })
       .then((res) => {
-        console.log(res.data.output)
+        console.log(res.data.output);
         setUserOutput(res.data.output);
       })
       .then(() => {
@@ -134,23 +127,38 @@ const EditorPage = () => {
       });
   }
 
-
-
-
-
   return (
     <div className="mainWrap">
       <div className="aside">
         <div className="asideInner">
-        <div className="logo" style={{ width: '100%', height: 'auto' }}>
-  <img className="logoImage" src="/code-collab-hub.png" alt="logo" style={{ maxWidth: '100%', maxHeight: '100%' }} />
-</div>
+          <div className="logo" style={{ width: "100%", height: "auto" }}>
+            <img
+              className="logoImage"
+              src="/code-collab-hub.png"
+              alt="logo"
+              style={{ maxWidth: "100%", maxHeight: "100%" }}
+            />
+          </div>
           <h3>Connected</h3>
           <div className="clientsList">
             {clients.map((client) => (
               <Client key={client.socketId} username={client.username} />
             ))}
           </div>
+        </div>
+
+        <div className="compilerSetting">
+        <select
+            className="language-selector"
+            value={userLang}
+            onChange={(e) => setUserLang(e.target.value)}
+          >
+            <option value="python">Python</option>
+            <option value="cpp14">C++</option>
+            {/* Add more options as needed */}
+          </select>
+          <button className="btn submission">COMPILE</button>
+          
         </div>
         <button className="btn copyBtn" onClick={copyRoomId}>
           Copy ROOM ID
@@ -170,42 +178,44 @@ const EditorPage = () => {
         {/* <button className="run-btn" onClick={() => {console.log(codeRef)}}>Run</button> */}
       </div>
 
-
       <div className="right-container">
-          <div className="input-wrapper">
-          <h4 style= {{color: "white"}}>Input:</h4>
-<div className="input-box" style={{ width: '100%', height: '200px' }}>
-  <textarea
-    id="code-inp"
-    onChange={(e) => setUserInput(e.target.value)}
-    style={{ width: '100%', height: '100%', boxSizing: 'border-box', backgroundColor: "#d4cdcd"}}
-  ></textarea>
-</div>
-          </div>
-
-          <div className="output-wrapper">
-            <h4 style= {{color: "white"}}>Output:</h4>
-            {loading ? (
-              <div className="spinner-box">
-                <img src={spinner} alt="Loading..." />
-              </div>
-            ) : (
-              <div className="output-box">
-                <pre>{userOutput}</pre>
-                <button
-                  onClick={() => {
-                    compile();
-                  }}
-                  className="clear-btn"
-                >
-                  Clear
-                </button>
-              </div>
-            )}
+        <div className="input-wrapper">
+          <h4 style={{ color: "white" }}>Input:</h4>
+          <div className="input-box" style={{ width: "100%", height: "200px" }}>
+            <textarea
+              id="code-inp"
+              onChange={(e) => setUserInput(e.target.value)}
+              style={{
+                width: "100%",
+                height: "100%",
+                boxSizing: "border-box",
+                backgroundColor: "#d4cdcd",
+              }}
+            ></textarea>
           </div>
         </div>
 
-
+        <div className="output-wrapper">
+          <h4 style={{ color: "white" }}>Output:</h4>
+          {loading ? (
+            <div className="spinner-box">
+              <img src={spinner} alt="Loading..." />
+            </div>
+          ) : (
+            <div className="output-box">
+              <pre>{userOutput}</pre>
+              <button
+                onClick={() => {
+                  compile();
+                }}
+                className="clear-btn"
+              >
+                Clear
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

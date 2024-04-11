@@ -58,6 +58,20 @@ footer a {
     cursor: pointer;
     transition: all 0.3s ease-in-out;
 }
+.compilerSetting {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+    
+}
+
+.language-selector {
+    font-size: 16px;
+}
+
+.submission {
+    background-color: red;
+}
 
 .joinBtn,
 .leaveBtn {
