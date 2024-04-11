@@ -104,28 +104,36 @@ const EditorPage = () => {
   }
 
   // Function to call the compile endpoint
-  function compile() {
+  // Function to call the compile endpoint
+function compile() {
     setLoading(true);
-    if (codeRef === ``) {
+    if (codeRef === "") {
       return;
     }
-
-    console.log(codeRef);
-
-    // Post request to compile endpoint
-    Axios.post(`http://localhost:4000/compile`, {
-      code: codeRef.current,
-      language: userLang,
-      input: userInput,
-    })
-      .then((res) => {
-        console.log(res.data.output);
-        setUserOutput(res.data.output);
-      })
-      .then(() => {
-        setLoading(false);
-      });
+  
+    toast.promise(
+      Axios.post(`http://localhost:4000/compile`, {
+        code: codeRef.current,
+        language: userLang,
+        input: userInput,
+      }),
+      {
+        loading: 'Compiling...',
+        success: (res) => {
+          setUserOutput(res.data.output);
+          setLoading(false);
+          return 'Compilation successful';
+        },
+        error: (error) => {
+          console.error("Compilation error:", error);
+          setUserOutput("");
+          setLoading(false);
+          return 'Compilation failed';
+        }
+      }
+    );
   }
+  
 
   return (
     <div className="mainWrap">
@@ -148,7 +156,7 @@ const EditorPage = () => {
         </div>
 
         <div className="compilerSetting">
-        <select
+          <select
             className="language-selector"
             value={userLang}
             onChange={(e) => setUserLang(e.target.value)}
@@ -157,8 +165,9 @@ const EditorPage = () => {
             <option value="cpp14">C++</option>
             {/* Add more options as needed */}
           </select>
-          <button className="btn submission">COMPILE</button>
-          
+          <button className="btn submission" onClick={() => compile()}>
+            COMPILE
+          </button>
         </div>
         <button className="btn copyBtn" onClick={copyRoomId}>
           Copy ROOM ID
@@ -206,7 +215,7 @@ const EditorPage = () => {
               <pre>{userOutput}</pre>
               <button
                 onClick={() => {
-                  compile();
+                  clearOutput();
                 }}
                 className="clear-btn"
               >
